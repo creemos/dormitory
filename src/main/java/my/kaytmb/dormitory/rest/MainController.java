@@ -15,4 +15,11 @@ public class MainController {
         return "login"; // Отображение страницы входа
     }
 
+    @GetMapping("/home")
+    public String home() {
+        return "home"; // Отображение страницы входа
+    }
+
+
+
 }
