@@ -1,9 +1,7 @@
 package my.kaytmb.dormitory.rest;
 
 
-import my.kaytmb.dormitory.dto.RoomRequest;
 import my.kaytmb.dormitory.dto.StudentRequest;
-import my.kaytmb.dormitory.entity.Room;
 import my.kaytmb.dormitory.entity.Student;
 import my.kaytmb.dormitory.service.StudentService;
 import org.springframework.http.ResponseEntity;
@@ -37,13 +35,13 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateRoom(@RequestBody StudentRequest studentRequest) {
+    public ResponseEntity<String> updateStudent(@RequestBody StudentRequest studentRequest) {
         studentService.updateStudent(studentRequest);
         return ResponseEntity.ok("Student updated, ID: " + studentRequest.getId());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRoom(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteStudent(@PathVariable Integer id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok("Student is deleted, ID: " + id);
     }

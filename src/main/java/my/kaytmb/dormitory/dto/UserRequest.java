@@ -23,4 +23,6 @@ public class UserRequest {
 
     String patrname;
 
+    Boolean isBlocked;
+
 }

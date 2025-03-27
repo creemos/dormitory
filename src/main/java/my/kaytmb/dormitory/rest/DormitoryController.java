@@ -2,9 +2,7 @@ package my.kaytmb.dormitory.rest;
 
 
 import my.kaytmb.dormitory.dto.DormitoryRequest;
-import my.kaytmb.dormitory.dto.RoomRequest;
 import my.kaytmb.dormitory.entity.Dormitory;
-import my.kaytmb.dormitory.entity.Room;
 import my.kaytmb.dormitory.service.DormitoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

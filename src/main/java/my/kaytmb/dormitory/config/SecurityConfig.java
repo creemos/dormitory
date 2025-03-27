@@ -9,7 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * @author kay 26.03.2025
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final UserRepository userRepository;
@@ -31,15 +32,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/public/**").permitAll() // Доступ без аутентификации
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // Только для роли ADMIN
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Для USER и ADMIN
+                        .requestMatchers("/home", "/css/**", "/js/**", "/images/**").permitAll() // Доступ без аутентификации
+                        .requestMatchers("/rooms/**").hasAnyRole("ADMIN", "DORMITORY")
+                        .requestMatchers("/universities/**").hasAnyRole("ADMIN", "UNIVERSITY")
+                        .requestMatchers("/students/**").hasAnyRole("ADMIN", "UNIVERSITY", "DORMITORY")
+                        .requestMatchers("/dormitories/**").hasAnyRole("ADMIN", "DORMITORY")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin((form) -> form // Форма входа
-                        .loginPage("/login").permitAll()
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .permitAll()
+
                 )
-                .logout(LogoutConfigurer::permitAll); // Разрешить выход
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // URL для выхода
+                        .logoutSuccessUrl("/home")// Перенаправление после выхода
+                        .invalidateHttpSession(true) // Удаление сессии
+                        .deleteCookies("JSESSIONID") // Удаление cookies
+                        .permitAll()
+                ); // Разрешить выход
         return http.build();
     }
 

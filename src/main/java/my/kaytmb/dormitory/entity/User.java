@@ -49,6 +49,9 @@ public class User implements UserDetails {
     @Column(name = "patrname")
     String patrname;
 
+    @Column(name = "is_blocked")
+    Boolean isBlocked;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

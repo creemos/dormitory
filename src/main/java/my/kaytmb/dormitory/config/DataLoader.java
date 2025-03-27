@@ -16,7 +16,7 @@ public class DataLoader {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            //userRepository.save(new User("admin", passwordEncoder.encode("b32h2ffp"), User.Role.ADMIN));
+            //userRepository.save(new User("admin", passwordEncoder.encode("xxxxxx"), User.Role.ADMIN));
         };
     }
 
