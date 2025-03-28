@@ -82,6 +82,17 @@ public class UserService {
     }
 
     @Transactional
+    public Boolean isCorrectPassword(String password, String raw) {
+        return passwordEncoder.matches(password, raw);
+    }
+
+    @Transactional
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

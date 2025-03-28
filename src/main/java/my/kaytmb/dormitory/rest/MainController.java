@@ -7,11 +7,11 @@ import my.kaytmb.dormitory.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -86,7 +86,37 @@ public class MainController {
             model.addAttribute("errorMessage", e.getMessage());
             return "edit-profile";
         }
+    }
 
+    @PostMapping("/change-password")
+    public String changePassword(
+            @RequestParam("currentPassword") String currentPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Authentication authentication,
+            Model model
+    ) {
+        User user = (User) authentication.getPrincipal();
+        try {
+            if (!userService.isCorrectPassword(currentPassword, user.getPassword())) {
+                model.addAttribute("errorMessage", "Текущий пароль введён неверно!");
+                model.addAttribute("user", user);
+                return "edit-profile";
+            }
+            if (!newPassword.equals(confirmPassword)) {
+                model.addAttribute("errorMessage", "Пароли не совпадают!");
+                model.addAttribute("user", user);
+                return "edit-profile";
+            }
+            userService.changePassword(user, newPassword);
+            model.addAttribute("successMessage", "Пароль успешно изменён!");
+            model.addAttribute("user", user);
+            return "edit-profile";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("user", user);
+            return "edit-profile";
+        }
     }
 
 
