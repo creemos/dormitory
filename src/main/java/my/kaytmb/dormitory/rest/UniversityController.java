@@ -9,7 +9,9 @@ import my.kaytmb.dormitory.entity.University;
 import my.kaytmb.dormitory.service.UniversityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * @author kay 26.03.2025
  */
 @Controller
-@RequestMapping("/api/universities/")
+@RequestMapping("/api/universities")
 @Tag(name = "UniversityController", description = "Операции с университетами")
 public class UniversityController {
 
@@ -43,10 +45,18 @@ public class UniversityController {
         return ResponseEntity.ok(university);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateUniversity(@RequestBody UniversityRequest universityRequest) {
-        universityService.updateUniversity(universityRequest);
-        return ResponseEntity.ok("University updated, ID: " + universityRequest.getId());
+    @GetMapping("/edit/{id}")
+    public String getUpdateUniversity(@PathVariable Integer id, Model model) {
+        University university = universityService.getUniversity(id);
+        model.addAttribute("university", university);
+        return "university/edit-university";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String postUpdateUniversity(@ModelAttribute UniversityRequest university, RedirectAttributes redirectAttributes) {
+        universityService.updateUniversity(university);
+        redirectAttributes.addFlashAttribute("successMessage", "Университет успешно обновлён!");
+        return "redirect:/api/universities";
     }
 
     @DeleteMapping("/{id}")
@@ -55,10 +65,11 @@ public class UniversityController {
         return ResponseEntity.ok("University is deleted, ID: " + id);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<University>> getAllUniversities() {
+    @GetMapping
+    public String getAllUniversities(Model model) {
         List<University> universities = universityService.getAllUniversities();
-        return ResponseEntity.ok(universities);
+        model.addAttribute("universities", universities);
+        return "university/university-root";
     }
 
 
