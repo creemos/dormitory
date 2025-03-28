@@ -26,6 +26,9 @@ public class UserService {
 
     @Transactional
     public Integer createUser(UserRequest request) {
+        if (userRepository.findByLogin(request.getLogin()).isPresent()) {
+            throw new RuntimeException("Пользователь с таким логином уже зарегистрирован!");
+        }
         User user = new User();
         user.setLogin(request.getLogin());
         user.setSurname(request.getSurname());
@@ -33,6 +36,7 @@ public class UserService {
         user.setPatrname(request.getPatrname());
         user.setRole(User.Role.valueOf(request.getRole()));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setIsBlocked(false);
         userRepository.save(user);
         return user.getId();
     }
@@ -46,6 +50,16 @@ public class UserService {
         user.setRole(User.Role.valueOf(request.getRole()));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateInfo(UserRequest request) {
+        User user = userRepository.getReferenceById(request.getId());
+        user.setSurname(request.getSurname());
+        user.setFirstname(request.getFirstname());
+        user.setPatrname(request.getPatrname());
+        userRepository.save(user);
+        return user;
     }
 
     @Transactional

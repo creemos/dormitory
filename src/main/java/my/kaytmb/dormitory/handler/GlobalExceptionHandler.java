@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         if (error.contains("unique constraint")) {
             status = HttpStatus.CONFLICT;
         }
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(status).body(e.getSQLState());
     }
 
 }
