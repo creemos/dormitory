@@ -33,11 +33,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/home", "/css/**", "/js/**", "/images/**").permitAll() // Доступ без аутентификации
-                        .requestMatchers("/rooms/**").hasAnyRole("ADMIN", "DORMITORY")
-                        .requestMatchers("/universities/**").hasAnyRole("ADMIN", "UNIVERSITY")
-                        .requestMatchers("/students/**").hasAnyRole("ADMIN", "UNIVERSITY", "DORMITORY")
-                        .requestMatchers("/dormitories/**").hasAnyRole("ADMIN", "DORMITORY")
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/rooms/**").hasAnyAuthority("ADMIN", "DORMITORY")
+                        .requestMatchers("/universities/**").hasAnyAuthority("ADMIN", "UNIVERSITY")
+                        .requestMatchers("/students/**").hasAnyAuthority("ADMIN", "UNIVERSITY", "DORMITORY")
+                        .requestMatchers("/dormitories/**").hasAnyAuthority("ADMIN", "DORMITORY")
+                        .requestMatchers("/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin((form) -> form // Форма входа

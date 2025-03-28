@@ -4,6 +4,7 @@ package my.kaytmb.dormitory.service;
 import my.kaytmb.dormitory.dto.UserRequest;
 import my.kaytmb.dormitory.entity.User;
 import my.kaytmb.dormitory.repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +95,8 @@ public class UserService {
 
     @Transactional
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        Sort sort = Sort.by(Sort.Order.asc("role"), Sort.Order.asc("id"));
+        return userRepository.findAll(sort);
     }
 
 }

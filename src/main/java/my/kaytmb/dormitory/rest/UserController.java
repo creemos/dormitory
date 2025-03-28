@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import my.kaytmb.dormitory.dto.UserRequest;
 import my.kaytmb.dormitory.entity.User;
 import my.kaytmb.dormitory.service.UserService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author kay 27.03.2025
