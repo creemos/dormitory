@@ -52,9 +52,9 @@
                 </span>
             </td>
             <td>
-                <a th:href="@{/edit-profile/{id}(id=${user.id})}" class="btn btn-primary btn-sm" style="width: 160px;">Редактировать</a>
-                <a th:if="${!user.isBlocked}" th:href="@{/disable/{id}(id=${user.id})}" class="btn btn-danger btn-sm" style="width: 160px;">Заблокировать</a>
-                <a th:if="${user.isBlocked}" th:href="@{/enable/{id}(id=${user.id})}" class="btn btn-success btn-sm" style="width: 160px;">Разблокировать</a>
+                <a th:href="@{/api/users/edit-profile/{id}(id=${user.id})}" class="btn btn-primary btn-sm" style="width: 160px;">Редактировать</a>
+                <a th:if="${!user.isBlocked}" th:href="@{/api/users/disable/{id}(id=${user.id})}" class="btn btn-danger btn-sm" style="width: 160px;">Заблокировать</a>
+                <a th:if="${user.isBlocked}" th:href="@{/api/users/enable/{id}(id=${user.id})}" class="btn btn-success btn-sm" style="width: 160px;">Разблокировать</a>
             </td>
         </tr>
         </tbody>

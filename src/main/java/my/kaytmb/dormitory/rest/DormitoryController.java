@@ -5,6 +5,7 @@ import my.kaytmb.dormitory.dto.DormitoryRequest;
 import my.kaytmb.dormitory.entity.Dormitory;
 import my.kaytmb.dormitory.service.DormitoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * @author kay 26.03.2025
  */
-@RestController
+@Controller
 @RequestMapping("/api/dormitories/")
 public class DormitoryController {
 

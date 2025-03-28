@@ -5,6 +5,7 @@ import my.kaytmb.dormitory.dto.RoomRequest;
 import my.kaytmb.dormitory.entity.Room;
 import my.kaytmb.dormitory.service.RoomService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * @author kay 25.03.2025
  */
-@RestController
+@Controller
 @RequestMapping("/api/rooms/")
 public class RoomController {
 

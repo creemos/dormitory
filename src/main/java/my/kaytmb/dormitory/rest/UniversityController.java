@@ -8,6 +8,7 @@ import my.kaytmb.dormitory.dto.UniversityRequest;
 import my.kaytmb.dormitory.entity.University;
 import my.kaytmb.dormitory.service.UniversityService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * @author kay 26.03.2025
  */
-@RestController
+@Controller
 @RequestMapping("/api/universities/")
 @Tag(name = "UniversityController", description = "Операции с университетами")
 public class UniversityController {

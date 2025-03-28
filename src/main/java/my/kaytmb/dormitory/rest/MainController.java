@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 
 /**
  * @author kay 26.03.2025
@@ -55,66 +54,6 @@ public class MainController {
         }
     }
 
-    @GetMapping("/about")
-    public String about() {
-        return "about";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        model.addAttribute("user", user);
-        return "sec/profile";
-    }
-
-    @GetMapping("/edit-profile")
-    public String editProfile(Model model, Authentication authentication) {
-        User user = userService.getUser(((User) authentication.getPrincipal()).getId());
-        model.addAttribute("user", user);
-        return "sec/edit-profile";
-    }
-
-    @GetMapping("/edit-my-profile")
-    public String editMyProfile(Model model, Authentication authentication) {
-        User user = userService.getUser(((User) authentication.getPrincipal()).getId());
-        model.addAttribute("user", user);
-        return "sec/edit-my-profile";
-    }
-
-    @GetMapping("/edit-profile/{id}")
-    public String editProfile(@PathVariable Integer id, Model model) {
-        User user = userService.getUser(id);
-        model.addAttribute("user", user);
-        return "sec/edit-profile";
-    }
-
-    @PostMapping("/edit-profile")
-    public String saveProfile(@ModelAttribute("user") UserRequest user, Model model, Authentication authentication,
-                              RedirectAttributes redirectAttributes) {
-        try {
-            userService.updateInfo(user);
-            redirectAttributes.addFlashAttribute("successMessage", "Профиль успешно сохранён");
-            return "redirect:/users";
-        } catch (RuntimeException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "sec/edit-profile";
-        }
-    }
-
-    @PostMapping("/edit-my-profile")
-    public String saveMyProfile(@ModelAttribute("user") UserRequest user, Model model, Authentication authentication,
-                              RedirectAttributes redirectAttributes) {
-        try {
-            User upd = userService.updateInfo(user);
-            model.addAttribute("successMessage", "Профиль успешно сохранён");
-            model.addAttribute("user", upd);
-            return "sec/profile";
-        } catch (RuntimeException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "sec/edit-profile";
-        }
-    }
-
     @PostMapping("/change-password")
     public String changePassword(
             @RequestParam("currentPassword") String currentPassword,
@@ -128,46 +67,55 @@ public class MainController {
             if (!userService.isCorrectPassword(currentPassword, user.getPassword())) {
                 model.addAttribute("errorMessage", "Текущий пароль введён неверно!");
                 model.addAttribute("user", user);
-                return "sec/edit-profile";
+                return "edit-my-profile";
             }
             if (!newPassword.equals(confirmPassword)) {
                 model.addAttribute("errorMessage", "Пароли не совпадают!");
                 model.addAttribute("user", user);
-                return "sec/edit-profile";
+                return "edit-my-profile";
             }
             userService.changePassword(user, newPassword);
             model.addAttribute("successMessage", "Пароль успешно изменён!");
             model.addAttribute("user", user);
-            return "sec/edit-profile";
+            return "edit-my-profile";
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("user", user);
-            return "sec/edit-profile";
+            return "edit-my-profile";
         }
     }
 
-    @GetMapping("/users")
-    public String allUsers(Model model) {
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "sec/users";
+    @GetMapping("/my-profile")
+    public String profile(Model model, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("user", user);
+        return "my-profile";
     }
 
-    @GetMapping("/disable/{id}")
-    public String disableUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        userService.disableUser(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Пользователь заблокирован!");
-        return "redirect:/users";
+    @GetMapping("/edit-my-profile")
+    public String editMyProfile(Model model, Authentication authentication) {
+        User user = userService.getUser(((User) authentication.getPrincipal()).getId());
+        model.addAttribute("user", user);
+        return "edit-my-profile";
     }
 
-    @GetMapping("/enable/{id}")
-    public String enableUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        userService.enableUser(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Пользователь разблокирован!");
-        return "redirect:/users";
+    @PostMapping("/edit-my-profile")
+    public String saveMyProfile(@ModelAttribute("user") UserRequest user, Model model, Authentication authentication,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            User upd = userService.updateInfo(user);
+            model.addAttribute("successMessage", "Профиль успешно сохранён");
+            model.addAttribute("user", upd);
+            return "my-profile";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "edit-my-profile";
+        }
     }
 
-
-
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
 
 }

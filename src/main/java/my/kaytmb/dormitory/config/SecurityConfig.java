@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/universities/**").hasAnyAuthority("ADMIN", "UNIVERSITY")
                         .requestMatchers("/students/**").hasAnyAuthority("ADMIN", "UNIVERSITY", "DORMITORY")
                         .requestMatchers("/dormitories/**").hasAnyAuthority("ADMIN", "DORMITORY")
-                        .requestMatchers("/users/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin((form) -> form // Форма входа

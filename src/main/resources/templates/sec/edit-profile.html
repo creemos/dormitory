@@ -29,7 +29,7 @@
                     </div>
 
                     <!-- Форма регистрации -->
-                    <form th:action="@{/edit-profile}" th:object="${user}" method="post">
+                    <form th:action="@{/api/users/edit-profile}" th:object="${user}" method="post">
                         <!-- Скрытое поле для передачи ID -->
                         <input type="hidden" th:field="*{id}" />
 
@@ -60,53 +60,12 @@
                                 <option value="DORMITORY">Общежитие (DORMITORY)</option>
                             </select>
                         </div>
-
-                        <!-- Кнопка для смены пароля -->
-                        <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                            Сменить пароль
-                        </button>
                         <!-- Кнопка отправки -->
                         <button type="submit" class="btn btn-primary w-100">Сохранить</button>
                     </form>
 
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<!-- Модальное окно для смены пароля -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <form th:action="@{/change-password}" method="post">
-                <div class="modal-body">
-                    <!-- Текущий пароль -->
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Текущий пароль</label>
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-                    </div>
-
-                    <!-- Новый пароль -->
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">Новый пароль</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
-                    </div>
-
-                    <!-- Подтверждение нового пароля -->
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Подтвердите новый пароль</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
