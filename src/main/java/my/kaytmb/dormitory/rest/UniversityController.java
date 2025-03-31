@@ -9,7 +9,9 @@ import my.kaytmb.dormitory.entity.University;
 import my.kaytmb.dormitory.service.UniversityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * @author kay 26.03.2025
  */
 @Controller
-@RequestMapping("/api/universities/")
+@RequestMapping("/api/universities")
 @Tag(name = "UniversityController", description = "Операции с университетами")
 public class UniversityController {
 
@@ -27,26 +29,38 @@ public class UniversityController {
         this.universityService = universityService;
     }
 
+    @GetMapping("/add")
+    public String createUniversity(Model model) {
+        model.addAttribute("university", new UniversityRequest());
+        return "university/add-university";
+    }
+
     @Operation(summary = "Создание нового университета", description = "Создает новый университет с данными из запроса")
     @ApiResponse(responseCode = "200", description = "Успешный запрос")
     @PostMapping("/add")
-    public ResponseEntity<String> createUniversity(@RequestBody UniversityRequest universityRequest) {
-        Integer id = universityService.createUniversity(universityRequest);
-        return ResponseEntity.ok("New university created, ID: " + id);
+    public String createUniversity(@ModelAttribute UniversityRequest universityRequest, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            universityService.createUniversity(universityRequest);
+            redirectAttributes.addFlashAttribute("successMessage", "Университет успешно добавлен!");
+            return "redirect:/api/universities";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "Ошибка при добавлении: " + e.getMessage());
+            return "universities/add";
+        }
     }
 
-    @Operation(summary = "Получение информации о конкретном университете", description = "Получение информации о конкретном университете")
-    @ApiResponse(responseCode = "200", description = "Успешный запрос")
-    @GetMapping("/{id}")
-    public ResponseEntity<University> getUniversityById(@PathVariable Integer id) {
+    @GetMapping("/edit/{id}")
+    public String getUpdateUniversity(@PathVariable Integer id, Model model) {
         University university = universityService.getUniversity(id);
-        return ResponseEntity.ok(university);
+        model.addAttribute("university", university);
+        return "university/edit-university";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateUniversity(@RequestBody UniversityRequest universityRequest) {
-        universityService.updateUniversity(universityRequest);
-        return ResponseEntity.ok("University updated, ID: " + universityRequest.getId());
+    @PostMapping("/edit/{id}")
+    public String postUpdateUniversity(@ModelAttribute UniversityRequest university, RedirectAttributes redirectAttributes) {
+        universityService.updateUniversity(university);
+        redirectAttributes.addFlashAttribute("successMessage", "Университет успешно обновлён!");
+        return "redirect:/api/universities";
     }
 
     @DeleteMapping("/{id}")
@@ -55,10 +69,11 @@ public class UniversityController {
         return ResponseEntity.ok("University is deleted, ID: " + id);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<University>> getAllUniversities() {
+    @GetMapping
+    public String getAllUniversities(Model model) {
         List<University> universities = universityService.getAllUniversities();
-        return ResponseEntity.ok(universities);
+        model.addAttribute("universities", universities);
+        return "university/university-root";
     }
 
 
