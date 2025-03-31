@@ -29,20 +29,24 @@ public class UniversityController {
         this.universityService = universityService;
     }
 
+    @GetMapping("/add")
+    public String createUniversity(Model model) {
+        model.addAttribute("university", new UniversityRequest());
+        return "university/add-university";
+    }
+
     @Operation(summary = "Создание нового университета", description = "Создает новый университет с данными из запроса")
     @ApiResponse(responseCode = "200", description = "Успешный запрос")
     @PostMapping("/add")
-    public ResponseEntity<String> createUniversity(@RequestBody UniversityRequest universityRequest) {
-        Integer id = universityService.createUniversity(universityRequest);
-        return ResponseEntity.ok("New university created, ID: " + id);
-    }
-
-    @Operation(summary = "Получение информации о конкретном университете", description = "Получение информации о конкретном университете")
-    @ApiResponse(responseCode = "200", description = "Успешный запрос")
-    @GetMapping("/{id}")
-    public ResponseEntity<University> getUniversityById(@PathVariable Integer id) {
-        University university = universityService.getUniversity(id);
-        return ResponseEntity.ok(university);
+    public String createUniversity(@ModelAttribute UniversityRequest universityRequest, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            universityService.createUniversity(universityRequest);
+            redirectAttributes.addFlashAttribute("successMessage", "Университет успешно добавлен!");
+            return "redirect:/api/universities";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "Ошибка при добавлении: " + e.getMessage());
+            return "universities/add";
+        }
     }
 
     @GetMapping("/edit/{id}")
