@@ -3,8 +3,10 @@ package my.kaytmb.dormitory.service;
 
 import my.kaytmb.dormitory.dto.DormitoryRequest;
 import my.kaytmb.dormitory.entity.Dormitory;
+import my.kaytmb.dormitory.entity.Room;
 import my.kaytmb.dormitory.repository.DormitoryRepository;
 import my.kaytmb.dormitory.repository.UniversityRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,13 @@ public class DormitoryService {
 
     @Transactional
     public List<Dormitory> getAllDormitories() {
-        return dormitoryRepository.findAll();
+        Sort sort = Sort.by(Sort.Order.asc("id"));
+        return dormitoryRepository.findAll(sort);
+    }
+
+    @Transactional
+    public List<Room> getRooms(Integer id) {
+        Sort sort = Sort.by(Sort.Order.asc("number"));
+        return dormitoryRepository.getRoomsByDormitory(id, sort);
     }
 }

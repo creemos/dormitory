@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Сетка комнат</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Сетка комнат</h2>
+    <!-- Скрытое поле для передачи ID -->
+    <input type="hidden" th:field="*{dormitory}" />
+    <!-- Сетка -->
+    <div class="row row-cols-1 row-cols-md-6 g-4">
+        <!-- Цикл для создания карточек -->
+        <div th:each="room : ${rooms}" class="col">
+            <a th:href="@{/api/rooms(number=${room.number}, dormitoryId=${dormitory})}">
+                <div class="card h-100"
+                     th:classappend="${room.isAvailable ? 'bg-success text-white' : 'bg-secondary text-white'}">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${room.number}"></h5>
+                        <p class="card-text" th:text="${room.isAvailable ? 'Есть места' : 'Нет мест'}"></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <hr>
+    <a th:if="@{room.isAvailable}" th:href="@{/api/rooms/add(dormitoryId=${dormitory})}" class="btn btn-primary btn-success mt-10" style="width: 160px;">Добавить комнату</a>
+</div>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

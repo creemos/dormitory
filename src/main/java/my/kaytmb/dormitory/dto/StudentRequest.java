@@ -3,7 +3,7 @@ package my.kaytmb.dormitory.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * @author kay 26.03.2025
@@ -19,7 +19,7 @@ public class StudentRequest {
 
     String patrname;
 
-    String gender;
+    Integer gender;
 
     Integer universityId;
 
@@ -27,9 +27,9 @@ public class StudentRequest {
 
     Integer roomId;
 
-    Date inDate;
+    LocalDate inDate;
 
-    Date outDate;
+    LocalDate outDate;
 
     Boolean isLiving;
 

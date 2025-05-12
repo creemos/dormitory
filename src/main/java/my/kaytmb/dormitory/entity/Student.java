@@ -8,7 +8,10 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author kay 25.03.2025
@@ -35,7 +38,7 @@ public class Student {
     String patrname;
 
     @Column(name = "gender_id")
-    String gender;
+    Integer gender;
 
     @ManyToOne
     @JoinColumn(name = "university_id")
@@ -50,12 +53,23 @@ public class Student {
     Room room;
 
     @Column(name = "in_date")
-    Date inDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate inDate;
 
     @Column(name = "out_date")
-    Date outDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate outDate;
 
     @Column(name = "is_living")
     Boolean isLiving;
+
+    public Integer getUniversityId() {
+        return university.getId();
+    }
+
+    public String getUniversityName() {
+        return university.getName();
+    }
+
 
 }

@@ -37,4 +37,8 @@ public class Dormitory {
     @Column(name = "is_available")
     Boolean isAvailable;
 
+    public Integer getUniversityId() {
+        return university.getId();
+    }
+
 }

@@ -7,13 +7,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import my.kaytmb.dormitory.dto.UniversityRequest;
 import my.kaytmb.dormitory.entity.University;
 import my.kaytmb.dormitory.service.UniversityService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author kay 26.03.2025
@@ -63,17 +64,25 @@ public class UniversityController {
         return "redirect:/api/universities";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUniversity(@PathVariable Integer id) {
+    @GetMapping("/delete/{id}")
+    public String deleteUniversity(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         universityService.deleteUniversity(id);
-        return ResponseEntity.ok("University is deleted, ID: " + id);
+        redirectAttributes.addFlashAttribute("successMessage", "Университет успешно удалён!");
+        return "redirect:/api/universities";
     }
 
     @GetMapping
     public String getAllUniversities(Model model) {
         List<University> universities = universityService.getAllUniversities();
         model.addAttribute("universities", universities);
-        return "university/university-root";
+        return "university/root-university";
+    }
+
+    @GetMapping("/json")
+    @ResponseBody
+    public Map<Integer, String> getAllUniversities() {
+        List<University> universities = universityService.getAllUniversities();
+        return universities.stream().collect(Collectors.toMap(University::getId, University::getName));
     }
 
 
