@@ -35,12 +35,13 @@
             <td th:text="${university.name}"></td>
             <td th:text="${university.duration}"></td>
             <td>
-                <a th:href="@{/edit-university/{id}(id=${university.id})}" class="btn btn-primary btn-sm" style="width: 160px;">Редактировать</a>
-                <a th:href="@{/delete-university/{id}(id=${university.id})}" class="btn btn-danger btn-sm" style="width: 160px;">Удалить</a>
+                <a th:href="@{/api/universities/edit/{id}(id=${university.id})}" class="btn btn-primary btn-sm" style="width: 160px;">Редактировать</a>
+                <a th:href="@{/api/universities/delete/{id}(id=${university.id})}" class="btn btn-danger btn-sm" style="width: 160px;">Удалить</a>
             </td>
         </tr>
         </tbody>
     </table>
+    <a th:href="@{/api/universities/add}" class="btn btn-primary btn-success" style="width: 160px;">Добавить</a>
 </div>
 
 <!-- Подключение Bootstrap JS -->

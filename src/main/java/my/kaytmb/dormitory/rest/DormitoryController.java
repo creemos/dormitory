@@ -3,10 +3,14 @@ package my.kaytmb.dormitory.rest;
 
 import my.kaytmb.dormitory.dto.DormitoryRequest;
 import my.kaytmb.dormitory.entity.Dormitory;
+import my.kaytmb.dormitory.entity.Room;
+import my.kaytmb.dormitory.entity.University;
 import my.kaytmb.dormitory.service.DormitoryService;
-import org.springframework.http.ResponseEntity;
+import my.kaytmb.dormitory.service.UniversityService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -14,37 +18,80 @@ import java.util.List;
  * @author kay 26.03.2025
  */
 @Controller
-@RequestMapping("/api/dormitories/")
+@RequestMapping("/api/dormitories")
 public class DormitoryController {
 
     private final DormitoryService dormitoryService;
+    private final UniversityService universityService;
 
-    public DormitoryController(DormitoryService dormitoryService) {
+    public DormitoryController(DormitoryService dormitoryService, UniversityService universityService) {
         this.dormitoryService = dormitoryService;
+        this.universityService = universityService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<String> getRoomById(@PathVariable Integer id) {
+    @GetMapping("/add")
+    public String addDormitory(Model model) {
+        DormitoryRequest dormitory = new DormitoryRequest();
+        model.addAttribute("dormitory", dormitory);
+        List<University> universities = universityService.getAllUniversities();
+        model.addAttribute("universities", universities);
+        return "dormitory/add-dormitory";
+    }
+
+    @PostMapping("/add")
+    public String addDormitory(@ModelAttribute DormitoryRequest dormitoryRequest, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            dormitoryService.createDormitory(dormitoryRequest);
+            redirectAttributes.addFlashAttribute("successMessage", "Общежитие успешно сохранено!");
+            return "redirect:/api/dormitories";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "Ошибка при сохранении: " + e.getMessage());
+            return "dormitory/add-dormitory";
+        }
+    }
+
+    @GetMapping("/edit/{id}")
+    public String updateDormitory(@PathVariable Integer id, Model model) {
         Dormitory dormitory = dormitoryService.getDormitory(id);
-        return ResponseEntity.ok("Dormitory with ID: " + id + ": " + dormitory);
+        List<University> universities = universityService.getAllUniversities();
+        model.addAttribute("dormitory", dormitory);
+        model.addAttribute("universities", universities);
+        return "/dormitory/edit-dormitory";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateDormitory(@RequestBody DormitoryRequest dormitoryRequest) {
-        dormitoryService.updateDormitory(dormitoryRequest);
-        return ResponseEntity.ok("Dormitory updated, ID: " + dormitoryRequest.getId());
+    @PostMapping("/edit")
+    public String updateDormitory(@ModelAttribute DormitoryRequest dormitoryRequest, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            dormitoryService.updateDormitory(dormitoryRequest);
+            redirectAttributes.addFlashAttribute("successMessage", "Общежитие успешно сохранено!");
+            return "redirect:/api/dormitories";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "Ошибка при сохранении: " + e.getMessage());
+            return "dormitory/add-dormitory";
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDormitory(@PathVariable Integer id) {
+    @GetMapping("/delete/{id}")
+    public String deleteDormitory(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         dormitoryService.deleteDormitory(id);
-        return ResponseEntity.ok("Dormitory is deleted, ID: " + id);
+        redirectAttributes.addFlashAttribute("successMessage", "Общежитие удалено!");
+        return "redirect:/api/dormitories";
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Dormitory>> getAllDormitories() {
+    @GetMapping
+    public String getAllDormitories(Model model) {
         List<Dormitory> dormitories = dormitoryService.getAllDormitories();
-        return ResponseEntity.ok(dormitories);
+        model.addAttribute("dormitories", dormitories);
+        return "dormitory/root-dormitory";
+    }
+
+    @GetMapping("/rooms/{id}")
+    public String getRoomNumbers(@PathVariable Integer id, Model model) {
+        Dormitory dormitory = dormitoryService.getDormitory(id);
+        List<Room> rooms = dormitoryService.getRooms(id);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("dormitory", dormitory.getId());
+        return "dormitory/list-rooms";
     }
 
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить студента в комнату</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/_navbar :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Добавить студента в комнату</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Сообщение об ошибке -->
+                    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+
+                    <!-- Сообщение об успешной регистрации -->
+                    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                        <p th:text="${successMessage}"></p>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <form th:action="@{/api/rooms/add-student}" th:object="${student}" method="post">
+                        <!-- Номер -->
+                        <div class="mb-3">
+                            <label for="university.id" class="form-label">Студент</label>
+                            <select class="form-select" id="university.id" th:field="*{universityId}" required>
+                                <option value="">-- Выберите студента --</option>
+                                <option th:each="student : ${students.entrySet()}"
+                                        th:value="${student.key}"
+                                        th:text="${student.value}"></option>
+                            </select>
+                        </div>
+                        <!-- Кнопка отправки -->
+                        <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

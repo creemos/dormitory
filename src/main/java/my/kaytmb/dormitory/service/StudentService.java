@@ -7,10 +7,15 @@ import my.kaytmb.dormitory.repository.DormitoryRepository;
 import my.kaytmb.dormitory.repository.RoomRepository;
 import my.kaytmb.dormitory.repository.StudentRepository;
 import my.kaytmb.dormitory.repository.UniversityRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author kay 26.03.2025
@@ -41,11 +46,11 @@ public class StudentService {
         student.setPatrname(request.getPatrname());
         student.setGender(request.getGender());
         student.setUniversity(universityRepository.getReferenceById(request.getUniversityId()));
-        student.setDormitory(dormitoryRepository.getReferenceById(request.getDormitoryId()));
-        student.setRoom(roomRepository.getReferenceById(request.getRoomId()));
+        student.setDormitory(request.getDormitoryId() != null ? dormitoryRepository.getReferenceById(request.getDormitoryId()) : null);
+        student.setRoom(request.getRoomId() != null ? roomRepository.getReferenceById(request.getRoomId()) : null);
         student.setInDate(request.getInDate());
         student.setOutDate(request.getOutDate());
-        student.setIsLiving(request.getIsLiving());
+        student.setIsLiving(false);
         studentRepository.save(student);
         return student.getId();
     }
@@ -58,11 +63,10 @@ public class StudentService {
         student.setPatrname(request.getPatrname());
         student.setGender(request.getGender());
         student.setUniversity(universityRepository.getReferenceById(request.getUniversityId()));
-        student.setDormitory(dormitoryRepository.getReferenceById(request.getDormitoryId()));
-        student.setRoom(roomRepository.getReferenceById(request.getRoomId()));
+        student.setDormitory(request.getDormitoryId() != null ? dormitoryRepository.getReferenceById(request.getDormitoryId()) : null);
+        student.setRoom(request.getRoomId() != null ? roomRepository.getReferenceById(request.getRoomId()) : null);
         student.setInDate(request.getInDate());
         student.setOutDate(request.getOutDate());
-        student.setIsLiving(request.getIsLiving());
         studentRepository.save(student);
     }
 
@@ -79,7 +83,23 @@ public class StudentService {
 
     @Transactional
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        Sort sort = Sort.by(Sort.Order.asc("id"));
+        return studentRepository.findAll(sort);
+    }
+
+    @Transactional
+    public Student excludePatient(Integer id) {
+        Student student = studentRepository.getReferenceById(id);
+        student.setOutDate(LocalDate.now());
+        student.setIsLiving(false);
+        return studentRepository.save(student);
+    }
+
+    @Transactional
+    public Map<Integer, String> getAvailableStudents(Integer universityId) {
+        List<Student> students = studentRepository.findStudentsByUniversity(universityId);
+        return students.stream().collect(Collectors.toMap(Student::getId,
+                student -> String.format("%s %s %s", student.getSurname(), student.getFirstname(), student.getPatrname())));
     }
 
 }
